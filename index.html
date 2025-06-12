@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>こころのコンパス - 最終調整版</title>
+    <title>こころのコンパス</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@300;400;500&family=Mochiy+Pop+One&display=swap');
         :root {
@@ -50,7 +50,7 @@
         .emotion-button .emotion-icon { font-size: 1.5em; margin-bottom: 3px; }
         .emotion-button.selected { border-width: 2px; font-weight: bold; color: var(--text-primary); transform: scale(1.02); box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
         
-        textarea#diary-memo-input { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; background-color: #fff; color: var(--text-primary); font-size: 0.9em; font-family: var(--font-body); min-height: 70px; resize: vertical; }
+        textarea#diary-memo-input { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; background-color: #fff; color: var(--text-primary); font-size: 0.9em; font-family: var(--font-body); min-height: 70px; resize: vertical; box-sizing: border-box; }
         textarea#diary-memo-input:focus { outline: none; border-color: var(--accent-main); box-shadow: 0 0 0 2px rgba(255, 204, 128, 0.3); }
 
         button[type="submit"] { display: block; width: 100%; margin-top: 15px; padding: 10px 15px; background-color: var(--accent-main); color: var(--text-primary); border: none; border-radius: 20px; cursor: pointer; font-size: 0.95em; font-weight: 700; font-family: var(--font-heading); transition: background-color 0.2s ease, transform 0.1s ease; }
@@ -277,11 +277,9 @@
                         
                         li.style.borderLeftColor = emotionColor;
 
-                        const emotionDisplaySpan = document.createElement('span');
-                        emotionDisplaySpan.classList.add('entry-emotion-display');
-                        emotionDisplaySpan.style.backgroundColor = emotionData ? emotionData.selectedBg : '#f0f0f0';
-                        emotionDisplaySpan.style.color = emotionColor; // アイコンの色も感情色に合わせる
-                        emotionDisplaySpan.innerHTML = `<span class="emotion-icon">${emotionIcon}</span>${sanitizeHTML(emotionText.replace(emotionIcon, '').trim())}`;
+                        const emotionIconDiv = document.createElement('div');
+                        emotionIconDiv.classList.add('entry-emotion-icon-display');
+                        emotionIconDiv.innerHTML = emotionIcon;
 
                         const textContentDiv = document.createElement('div');
                         textContentDiv.classList.add('entry-text-content');
@@ -290,17 +288,8 @@
                             <p class="entry-date">${formattedDate}</p>
                         `;
 
-                        // 感情表示をリストアイテムの先頭に持ってくる
-                        const headerDiv = document.createElement('div');
-                        headerDiv.classList.add('entry-header'); // CSSでスタイル調整が必要なら
-                        headerDiv.appendChild(emotionDisplaySpan);
-                        // headerDiv.appendChild(dateSpan); // 日付をヘッダーに持ってくる場合
-
-                        li.appendChild(headerDiv); // ヘッダー（感情タグと日付）
-                        // 写真サムネイル表示エリア (次のステップで復活)
-                        // li.appendChild(photoWrapper);
-                        li.appendChild(textContentDiv); // メモ
-                        // タグ、明日への一歩も後のステップで
+                        li.appendChild(emotionIconDiv);
+                        li.appendChild(textContentDiv);
 
                         diaryListUl.appendChild(li);
                     });
