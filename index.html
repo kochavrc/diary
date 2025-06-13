@@ -68,6 +68,22 @@
         .diary-list li .entry-text-content { flex-grow: 1; }
         .diary-list li .entry-memo-text { font-size: 0.9em; color: var(--text-primary); margin-bottom: 3px; white-space: pre-wrap; word-break: break-word; }
         .diary-list li .entry-date { font-size: 0.75em; color: var(--text-secondary); text-align: right; }
+        .diary-list li .entry-actions { flex-shrink: 0; }
+        .delete-button { 
+            background-color: #ffebee; 
+            border: 1px solid #ef9a9a; 
+            color: #c62828; 
+            padding: 4px 8px; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-size: 0.7em; 
+            font-family: var(--font-body);
+            transition: all 0.2s ease;
+        }
+        .delete-button:hover { 
+            background-color: #ffcdd2; 
+            border-color: #e57373; 
+        }
         
         .message-box { padding: 8px 12px; border-radius: 6px; margin-bottom: 10px; text-align: center; font-size: 0.8em; border-width: 1px; border-style: solid; display:none;}
         .info-message { background-color: #d4edda; color: #155724; border-color: #c3e6cb; }
@@ -255,6 +271,21 @@
                     }
                 }
 
+                function deleteDiary(diaryId) {
+                    console.log("deleteDiary: 削除開始, ID:", diaryId);
+                    const index = diaries.findIndex(diary => diary.id === diaryId);
+                    if (index !== -1) {
+                        const deletedDiary = diaries.splice(index, 1)[0];
+                        saveDiariesToStorage();
+                        renderDiaryList();
+                        displayUserMessage('info-display', "きろくを削除しました。");
+                        console.log("日記削除完了:", deletedDiary);
+                    } else {
+                        console.error("削除対象の日記が見つかりません。ID:", diaryId);
+                        displayUserMessage('error-log-display', "削除に失敗しました。", true);
+                    }
+                }
+
                 function renderDiaryList() {
                     if (!diaryListUl) { console.error("renderDiaryList: diaryListUl is null!"); return; }
                     diaryListUl.innerHTML = '';
@@ -288,8 +319,21 @@
                             <p class="entry-date">${formattedDate}</p>
                         `;
 
+                        const actionsDiv = document.createElement('div');
+                        actionsDiv.classList.add('entry-actions');
+                        const deleteButton = document.createElement('button');
+                        deleteButton.classList.add('delete-button');
+                        deleteButton.textContent = '削除';
+                        deleteButton.addEventListener('click', () => {
+                            if (confirm('このきろくを削除しますか？')) {
+                                deleteDiary(diary.id);
+                            }
+                        });
+                        actionsDiv.appendChild(deleteButton);
+
                         li.appendChild(emotionIconDiv);
                         li.appendChild(textContentDiv);
+                        li.appendChild(actionsDiv);
 
                         diaryListUl.appendChild(li);
                     });
