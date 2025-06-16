@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>こころのコンパス</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@300;400;500&family=Mochiy+Pop+One&display=swap');
+
         :root {
             --bg-main: #FAF7F2;
             --bg-container: #FFFFFF;
@@ -18,13 +20,12 @@
             --font-body: 'Kiwi Maru', serif;
             --font-heading: 'Mochiy Pop One', sans-serif;
             /* 感情の色 */
-            --emotion-happy: #AED581;        /* 😊 うれしい */
-            --emotion-calm: #B2DFDB;         /* 😌 おだやか */
-            --emotion-neutral: #E0E0E0;      /* 🙂 ふつう */
-            --emotion-sad: #B0BEC5;          /* 😢 かなしい */
-            --emotion-frustrated: #FFCCBC;  /* 😠 イライラ */
-            --emotion-lonely: #A4B8BF;     /* 😔 さみしい (新しい色) */
-            /* 他の感情色も必要に応じてここに追加 */
+            --emotion-happy: #AED581;
+            --emotion-calm: #B2DFDB;
+            --emotion-neutral: #E0E0E0;
+            --emotion-sad: #B0BEC5;
+            --emotion-frustrated: #FFCCBC;
+            --emotion-lonely: #A4B8BF;
             --emotion-very-happy: #FFF176;
             --emotion-fun: #A5D6A7;
             --emotion-tired: #CFD8DC;
@@ -32,125 +33,643 @@
             --emotion-anxious: #D1C4E9;
             --emotion-other: #D7CCC8;
         }
-        body { font-family: var(--font-body); margin: 0; padding: 15px; background-color: var(--bg-main); color: var(--text-primary); line-height: 1.7; display: flex; flex-direction: column; align-items: center; min-height: 100vh; box-sizing: border-box; }
-        .app-wrapper { width: 100%; max-width: 580px; }
-        .container { background-color: var(--bg-container); padding: 20px; border-radius: 12px; box-shadow: 0 3px 10px rgba(0,0,0,0.07); margin-bottom: 20px; border: 1px solid var(--border-color); }
-        header { text-align: center; margin-bottom: 20px; }
-        header h1 { font-family: var(--font-heading); font-size: 2em; margin-bottom: 5px; }
-        header .subtitle { font-size: 0.9em; color: var(--text-secondary); }
-        .section-title { font-family: var(--font-heading); color: var(--text-primary); margin-top:0; margin-bottom: 15px; font-size: 1.3em; text-align: center; padding-bottom: 5px; border-bottom: 1px dotted var(--accent-gentle); }
-        
-        .form-area { padding: 15px; background-color: var(--bg-form-area); border-radius: 10px; }
-        .form-group { margin-bottom: 15px; }
-        .form-group:last-child { margin-bottom: 0; }
-        label { display: block; margin-bottom: 5px; font-weight: 500; font-size: 0.85em; }
-        
-        .emotion-selector { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; }
-        .emotion-button { background-color: #fff; border: 2px solid var(--border-color); color: var(--text-secondary); padding: 10px 5px; border-radius: 8px; cursor: pointer; font-size: 0.8em; transition: all 0.15s ease; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; min-height: 60px; }
-        .emotion-button .emotion-icon { font-size: 1.5em; margin-bottom: 3px; }
-        .emotion-button.selected { border-width: 2px; font-weight: bold; color: var(--text-primary); transform: scale(1.02); box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
-        
-        textarea#diary-memo-input { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; background-color: #fff; color: var(--text-primary); font-size: 0.9em; font-family: var(--font-body); min-height: 70px; resize: vertical; box-sizing: border-box; }
-        textarea#diary-memo-input:focus { outline: none; border-color: var(--accent-main); box-shadow: 0 0 0 2px rgba(255, 204, 128, 0.3); }
 
-        /* 写真アップロード関連のスタイル */
-        .photo-upload-area { margin-top: 10px; padding: 15px; border: 2px dashed var(--border-color); border-radius: 8px; text-align: center; background-color: #fff; transition: border-color 0.2s ease; }
-        .photo-upload-area:hover { border-color: var(--accent-main); }
-        .photo-upload-area.dragover { border-color: var(--accent-main); background-color: var(--accent-gentle); }
-        #photo-input { display: none; }
-        .photo-upload-button { display: inline-block; padding: 8px 16px; background-color: var(--accent-gentle); color: var(--text-primary); border: 1px solid var(--accent-main); border-radius: 6px; cursor: pointer; font-size: 0.85em; font-family: var(--font-body); transition: background-color 0.2s ease; }
-        .photo-upload-button:hover { background-color: var(--accent-main); }
-        .photo-preview { margin-top: 10px; max-width: 200px; max-height: 200px; border-radius: 6px; object-fit: cover; }
-        .photo-remove-button { margin-top: 5px; padding: 4px 8px; background-color: #ffebee; border: 1px solid #ef9a9a; color: #c62828; border-radius: 4px; cursor: pointer; font-size: 0.75em; }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
 
-        button[type="submit"] { display: block; width: 100%; margin-top: 15px; padding: 10px 15px; background-color: var(--accent-main); color: var(--text-primary); border: none; border-radius: 20px; cursor: pointer; font-size: 0.95em; font-weight: 700; font-family: var(--font-heading); transition: background-color 0.2s ease, transform 0.1s ease; }
-        button[type="submit"]:hover { background-color: #FFA726; transform: translateY(-1px); }
-        button[type="submit"]:active { transform: translateY(0px); }
-
-        /* フィルター機能のスタイル */
-        .filter-section { margin-bottom: 20px; padding: 15px; background-color: var(--bg-form-area); border-radius: 10px; }
-        .filter-controls { display: flex; flex-wrap: wrap; gap: 15px; align-items: center; justify-content: center; }
-        .filter-group { display: flex; flex-direction: column; gap: 5px; min-width: 150px; }
-        .filter-label { font-size: 0.8em; color: var(--text-secondary); font-weight: 500; }
-        .filter-select { padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; background-color: #fff; color: var(--text-primary); font-size: 0.85em; font-family: var(--font-body); cursor: pointer; }
-        .filter-select:focus { outline: none; border-color: var(--accent-main); box-shadow: 0 0 0 2px rgba(255, 204, 128, 0.3); }
-
-        .diary-list { list-style: none; padding: 0; margin-top: 20px; }
-        .diary-list li {
-            background-color: #fff; padding: 12px 15px; margin-bottom: 10px;
-            border-radius: 8px; border: 1px solid var(--border-color);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            display: flex; align-items: flex-start; gap: 10px;
+            to {
+                opacity: 1;
+            }
         }
-        .diary-list li .entry-emotion-icon-display { font-size: 1.6em; flex-shrink: 0; width: 30px; text-align: center; margin-top: 2px; }
-        .diary-list li .entry-text-content { flex-grow: 1; }
-        .diary-list li .entry-memo-text { font-size: 0.9em; color: var(--text-primary); margin-bottom: 8px; white-space: pre-wrap; word-break: break-word; }
-        .diary-list li .entry-date { font-size: 0.75em; color: var(--text-secondary); margin-bottom: 8px; }
-        .diary-list li .entry-photo { max-width: 200px; max-height: 150px; border-radius: 6px; object-fit: cover; margin-bottom: 8px; cursor: pointer; }
-        .diary-list li .entry-actions { flex-shrink: 0; margin-top: 2px; }
-        .delete-button { 
-            background-color: #ffebee; 
-            border: 1px solid #ef9a9a; 
-            color: #c62828; 
-            padding: 4px 8px; 
-            border-radius: 4px; 
-            cursor: pointer; 
-            font-size: 0.7em; 
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                max-height: 0;
+                padding-top: 0;
+                padding-bottom: 0;
+                margin-bottom: 0;
+                transform: translateY(-10px);
+                overflow: hidden;
+            }
+
+            to {
+                opacity: 1;
+                max-height: 500px;
+                padding-top: 12px;
+                padding-bottom: 12px;
+                margin-bottom: 10px;
+                transform: translateY(0);
+                overflow: hidden;
+            }
+        }
+
+        body {
+            font-family: var(--font-body);
+            margin: 0;
+            padding: 15px;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            line-height: 1.7;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .app-wrapper {
+            width: 100%;
+            max-width: 580px;
+        }
+
+        .container {
+            background-color: var(--bg-container);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+            animation: fadeInUp 0.6s ease-out both;
+        }
+
+        .container:nth-of-type(1) {
+            animation-delay: 0.1s;
+        }
+
+        .container:nth-of-type(2) {
+            animation-delay: 0.2s;
+        }
+
+        .container:nth-of-type(3) {
+            animation-delay: 0.3s;
+        }
+
+        .container:nth-of-type(4) {
+            animation-delay: 0.4s;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            font-family: var(--font-heading);
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+
+        header .subtitle {
+            font-size: 0.9em;
+            color: var(--text-secondary);
+        }
+
+        .section-title {
+            font-family: var(--font-heading);
+            color: var(--text-primary);
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            text-align: center;
+            padding-bottom: 5px;
+            border-bottom: 1px dotted var(--accent-gentle);
+        }
+
+        .form-area {
+            padding: 15px;
+            background-color: var(--bg-form-area);
+            border-radius: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            font-size: 0.85em;
+        }
+
+        .emotion-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 8px;
+        }
+
+        .emotion-button {
+            background-color: #fff;
+            border: 2px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 10px 5px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8em;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            min-height: 60px;
+            font-family: var(--font-body); /* フォントを適用 */
+        }
+
+        .emotion-button .emotion-icon {
+            font-size: 1.5em;
+            margin-bottom: 3px;
+        }
+
+        .emotion-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .emotion-button.selected {
+            border-width: 2px;
+            font-weight: bold;
+            color: var(--text-primary);
+            transform: scale(1.05);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+        }
+
+        textarea#diary-memo-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background-color: #fff;
+            color: var(--text-primary);
+            font-size: 0.9em;
+            font-family: var(--font-body);
+            min-height: 70px;
+            resize: vertical;
+            box-sizing: border-box;
+            transition: all 0.2s ease;
+        }
+
+        textarea#diary-memo-input:focus {
+            outline: none;
+            border-color: var(--accent-main);
+            box-shadow: 0 0 0 3px rgba(255, 204, 128, 0.4);
+        }
+
+        .photo-upload-area {
+            margin-top: 10px;
+            padding: 15px;
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            text-align: center;
+            background-color: #fff;
+            transition: all 0.3s ease;
+        }
+
+        .photo-upload-area:hover {
+            border-color: var(--accent-main);
+            transform: scale(1.01);
+        }
+
+        .photo-upload-area.dragover {
+            border-color: var(--accent-main);
+            background-color: var(--accent-gentle);
+            transform: scale(1.02);
+        }
+
+        #photo-input {
+            display: none;
+        }
+
+        .photo-upload-button {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: var(--accent-gentle);
+            color: var(--text-primary);
+            border: 1px solid var(--accent-main);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-family: var(--font-body);
+            transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+
+        .photo-upload-button:hover {
+            background-color: var(--accent-main);
+            transform: translateY(-1px);
+        }
+
+        .photo-preview {
+            margin-top: 10px;
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 6px;
+            object-fit: cover;
+            animation: fadeIn 0.5s;
+        }
+
+        .photo-remove-button {
+            margin-top: 5px;
+            padding: 4px 8px;
+            background-color: #ffebee;
+            border: 1px solid #ef9a9a;
+            color: #c62828;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.75em;
+            transition: all 0.2s ease;
+        }
+
+        .photo-remove-button:hover {
+            background-color: #ffcdd2;
+            transform: scale(1.05);
+        }
+
+        button[type="submit"] {
+            display: block;
+            width: 100%;
+            margin-top: 15px;
+            padding: 10px 15px;
+            background-color: var(--accent-main);
+            color: var(--text-primary);
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: 700;
+            font-family: var(--font-heading);
+            transition: all 0.2s ease;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #FFA726;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        button[type="submit"]:active {
+            transform: translateY(0px);
+            box-shadow: none;
+        }
+
+        .filter-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: var(--bg-form-area);
+            border-radius: 10px;
+        }
+
+        .filter-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            min-width: 150px;
+        }
+
+        .filter-label {
+            font-size: 0.8em;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background-color: #fff;
+            color: var(--text-primary);
+            font-size: 0.85em;
+            font-family: var(--font-body);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--accent-main);
+            box-shadow: 0 0 0 3px rgba(255, 204, 128, 0.4);
+        }
+
+        .diary-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+
+        .diary-list li {
+            background-color: #fff;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            animation: fadeInUp 0.5s ease-out both;
+        }
+
+        .diary-list li.new-entry {
+            animation: slideInDown 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) both;
+        }
+
+        .diary-list li .entry-emotion-icon-display {
+            font-size: 1.6em;
+            flex-shrink: 0;
+            width: 30px;
+            text-align: center;
+            margin-top: 2px;
+        }
+
+        .diary-list li .entry-text-content {
+            flex-grow: 1;
+        }
+
+        .diary-list li .entry-memo-text {
+            font-size: 0.9em;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .diary-list li .entry-date {
+            font-size: 0.75em;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .diary-list li .entry-photo {
+            max-width: 200px;
+            max-height: 150px;
+            border-radius: 6px;
+            object-fit: cover;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .diary-list li .entry-photo:hover {
+            transform: scale(1.03);
+        }
+
+        .diary-list li .entry-actions {
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .delete-button {
+            background-color: #ffebee;
+            border: 1px solid #ef9a9a;
+            color: #c62828;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.7em;
             font-family: var(--font-body);
             transition: all 0.2s ease;
         }
-        .delete-button:hover { 
-            background-color: #ffcdd2; 
-            border-color: #e57373; 
+
+        .delete-button:hover {
+            background-color: #ffcdd2;
+            border-color: #e57373;
+            transform: scale(1.05);
         }
-        
-        .message-box { padding: 8px 12px; border-radius: 6px; margin-bottom: 10px; text-align: center; font-size: 0.8em; border-width: 1px; border-style: solid; display:none;}
-        .info-message { background-color: #d4edda; color: #155724; border-color: #c3e6cb; }
-        .error-message { background-color: #f8d7da; color: #721c24; border-color: #f5c6cb; }
-        .no-diary-message { text-align: center; color: var(--text-secondary); padding: 15px; background-color: #f9f9f9; border-radius: 8px; border: 1px dashed var(--border-color); }
-        #error-log-display { color: red; white-space: pre-wrap; border: 1px solid red; padding: 10px; margin-top: 20px; background-color: #fff0f0; display: none; }
-        .privacy-note { font-size: 0.8em; color: var(--text-secondary); text-align: center; margin-top: 20px; padding: 10px; background-color: #f0f0f0; border-radius: 6px; }
 
-        /* モーダル関連のスタイル */
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); }
-        .modal-content { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); max-width: 90vw; max-height: 90vh; }
-        .modal-content img { width: 100%; height: auto; border-radius: 8px; }
-        .modal-close { position: absolute; top: 10px; right: 15px; color: white; font-size: 28px; font-weight: bold; cursor: pointer; }
+        .message-box {
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            text-align: center;
+            font-size: 0.8em;
+            border-width: 1px;
+            border-style: solid;
+            display: none;
+            animation: fadeIn 0.3s;
+        }
 
+        .info-message {
+            background-color: #d4edda;
+            color: #155724;
+            border-color: #c3e6cb;
+        }
+
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-color: #f5c6cb;
+        }
+
+        .no-diary-message {
+            text-align: center;
+            color: var(--text-secondary);
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            border: 1px dashed var(--border-color);
+            animation: fadeIn 0.5s;
+        }
+
+        #error-log-display {
+            color: red;
+            white-space: pre-wrap;
+            border: 1px solid red;
+            padding: 10px;
+            margin-top: 20px;
+            background-color: #fff0f0;
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+
+        .privacy-note {
+            font-size: 0.8em;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 6px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0);
+            animation: fadeIn 0.3s forwards;
+        }
+
+        .modal.show {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.95);
+            max-width: 90vw;
+            max-height: 90vh;
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .modal.show .modal-content {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        .modal-content img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+            transition: transform 0.2s;
+        }
+
+        .modal-close:hover {
+            transform: scale(1.1);
+        }
+
+        .data-management-section {
+            padding: 15px;
+            background-color: var(--bg-form-area);
+        }
+
+        .data-management-title {
+            font-size: 1.1em;
+            font-family: var(--font-heading);
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: var(--text-secondary);
+        }
+
+        .data-management-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .data-management-button {
+            padding: 8px 16px;
+            background-color: #fff;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-family: var(--font-body);
+            transition: all 0.2s ease;
+            width: 80%;
+            max-width: 280px;
+        }
+
+        .data-management-button:hover {
+            border-color: var(--accent-main);
+            background-color: var(--bg-form-area);
+            transform: translateY(-1px);
+        }
+
+        .data-management-note {
+            font-size: 0.75em;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-top: 10px;
+            margin-bottom: 0;
+            line-height: 1.5;
+        }
+
+        #storage-status {
+            font-size: 0.8em;
+            text-align: center;
+            padding: 5px;
+            border-radius: 4px;
+            margin: 10px auto 0;
+            max-width: 280px;
+            transition: all 0.3s ease;
+        }
+
+        #storage-status.persistent {
+            background-color: #DCEDC8;
+            color: #33691E;
+        }
+
+        #storage-status.default {
+            background-color: #FFF9C4;
+            color: #F57F17;
+        }
     </style>
 </head>
+
 <body>
+    <!-- (HTML部分は変更ありません) -->
     <div class="app-wrapper">
         <div class="container">
             <header>
                 <h1>こころのコンパス</h1>
                 <p class="subtitle">今日のきもちを、のこそう</p>
             </header>
-
             <div id="info-display" class="message-box info-message"></div>
             <div id="error-log-display" class="error-message"></div>
-
             <section class="form-section">
                 <h2 class="section-title">今のわたし</h2>
                 <div class="form-area">
                     <form id="diary-form">
-                        <div class="form-group">
-                            <label>どんなきもち？ (ひとつえらんでね)</label>
-                            <div class="emotion-selector" id="emotion-selector-buttons">
-                                <!-- JSで感情ボタンを生成 -->
-                            </div>
-                            <input type="hidden" id="selected-emotion-value">
+                        <div class="form-group"><label>どんなきもち？ (ひとつえらんでね)</label>
+                            <div class="emotion-selector" id="emotion-selector-buttons"></div><input type="hidden"
+                                id="selected-emotion-value">
                         </div>
-                        <div class="form-group">
-                            <label for="diary-memo-input">ひとこと (思ったこと、あったこと)</label>
-                            <textarea id="diary-memo-input" rows="3" placeholder="いま、どんな感じ？"></textarea>
-                        </div>
+                        <div class="form-group"><label for="diary-memo-input">ひとこと (思ったこと、あったこと)</label><textarea
+                                id="diary-memo-input" rows="3" placeholder="いま、どんな感じ？"></textarea></div>
                         <div class="form-group">
                             <label>心に残った一枚 (あれば)</label>
                             <div class="photo-upload-area" id="photo-upload-area">
-                                <input type="file" id="photo-input" accept="image/*">
-                                <label for="photo-input" class="photo-upload-button">📷 写真を選ぶ</label>
-                                <p style="margin: 5px 0 0 0; font-size: 0.75em; color: var(--text-secondary);">または、ここに写真をドラッグ＆ドロップ</p>
+                                <input type="file" id="photo-input" accept="image/*"><label for="photo-input"
+                                    class="photo-upload-button">📷 写真を選ぶ</label>
+                                <p style="margin: 5px 0 0 0; font-size: 0.75em; color: var(--text-secondary);">
+                                    または、ここに写真をドラッグ＆ドロップ</p>
                                 <div id="photo-preview-container"></div>
                             </div>
                         </div>
@@ -159,249 +678,78 @@
                 </div>
             </section>
         </div>
-
         <div class="container list-section">
             <h2 class="section-title">これまでのわたし</h2>
             <div class="filter-section">
                 <div class="filter-controls">
-                    <div class="filter-group">
-                        <label class="filter-label">きもち</label>
-                        <select id="emotion-filter" class="filter-select">
+                    <div class="filter-group"><label class="filter-label">きもち</label><select id="emotion-filter"
+                            class="filter-select">
                             <option value="all">すべて</option>
-                            <!-- JSで感情オプションを生成 -->
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <label class="filter-label">月</label>
-                        <select id="month-filter" class="filter-select">
+                        </select></div>
+                    <div class="filter-group"><label class="filter-label">月</label><select id="month-filter"
+                            class="filter-select">
                             <option value="all">すべて</option>
-                            <!-- JSで月のオプションを生成 -->
-                        </select>
-                    </div>
+                        </select></div>
                 </div>
             </div>
             <ul id="diary-list-ul" class="diary-list"></ul>
         </div>
-        
+        <div class="container data-management-section">
+            <h3 class="data-management-title">データ管理</h3>
+            <div class="data-management-controls">
+                <button id="export-data-button" class="data-management-button">データを書き出す (バックアップ)</button>
+                <button id="import-data-button" class="data-management-button">データを読み込む (復元)</button>
+                <input type="file" id="import-file-input" accept=".json,application/json" style="display: none;">
+                <p id="storage-status"></p>
+                <p class="data-management-note">ブラウザの空き容量が少なくなっちゃうと、きろくが自動的に消えてしまうことがあるんだ。大事なきろくは、忘れずに定期的に書き出してバックアップしてね。あなたの大切なきろくを、しっかり守るために。</p>
+            </div>
+        </div>
         <div class="privacy-note container">
-            <p><strong>安心してね。</strong>ここに書いたことは、あなたの端末の中にだけ保存されます。</p>
+            <p><strong>安心してね。</strong>ここに書いたきろくは、あなたの中にだけにきろくされるよ。プライベートモードだと、きろくが残らないから気をつけてね。</p>
         </div>
     </div>
-
-    <!-- 写真拡大表示用のモーダル -->
-    <div id="photo-modal" class="modal">
-        <span class="modal-close">&times;</span>
-        <div class="modal-content">
-            <img id="modal-image" src="" alt="">
-        </div>
+    <div id="photo-modal" class="modal"><span class="modal-close">×</span>
+        <div class="modal-content"><img id="modal-image" src="" alt=""></div>
     </div>
 
     <script>
         // グローバルエラーハンドラ
-        window.onerror = function(message, source, lineno, colno, error) {
-            const errorLog = document.getElementById('error-log-display');
-            if (errorLog) {
-                errorLog.textContent += `ページエラー:\n${message}\nファイル: ${source}\n行: ${lineno}, 列: ${colno}\n\n`;
-                errorLog.style.display = 'block';
-            }
-            console.error("キャッチされなかったエラー:", message, "at", source, lineno, colno, error);
-            return false;
-        };
-
-        // IndexedDB関連
-        class DiaryStorage {
-            constructor() {
-                this.dbName = 'KokoroCompassDB';
-                this.dbVersion = 1;
-                this.storeName = 'diaries';
-                this.db = null;
-            }
-
-            async init() {
-                return new Promise((resolve, reject) => {
-                    const request = indexedDB.open(this.dbName, this.dbVersion);
-                    
-                    request.onerror = () => reject(request.error);
-                    request.onsuccess = () => {
-                        this.db = request.result;
-                        resolve();
-                    };
-                    
-                    request.onupgradeneeded = (event) => {
-                        const db = event.target.result;
-                        if (!db.objectStoreNames.contains(this.storeName)) {
-                            const store = db.createObjectStore(this.storeName, { keyPath: 'id' });
-                            store.createIndex('date', 'date', { unique: false });
-                            store.createIndex('emotion', 'emotion', { unique: false });
-                        }
-                    };
-                });
-            }
-
-            async saveDiary(diary) {
-                return new Promise((resolve, reject) => {
-                    const transaction = this.db.transaction([this.storeName], 'readwrite');
-                    const store = transaction.objectStore(this.storeName);
-                    const request = store.put(diary);
-                    
-                    request.onerror = () => reject(request.error);
-                    request.onsuccess = () => resolve();
-                });
-            }
-
-            async getAllDiaries() {
-                return new Promise((resolve, reject) => {
-                    const transaction = this.db.transaction([this.storeName], 'readonly');
-                    const store = transaction.objectStore(this.storeName);
-                    const request = store.getAll();
-                    
-                    request.onerror = () => reject(request.error);
-                    request.onsuccess = () => resolve(request.result);
-                });
-            }
-
-            async deleteDiary(id) {
-                return new Promise((resolve, reject) => {
-                    const transaction = this.db.transaction([this.storeName], 'readwrite');
-                    const store = transaction.objectStore(this.storeName);
-                    const request = store.delete(id);
-                    
-                    request.onerror = () => reject(request.error);
-                    request.onsuccess = () => resolve();
-                });
-            }
-        }
+        window.onerror = function (message, source, lineno, colno, error) { const errorLog = document.getElementById('error-log-display'); if (errorLog) { errorLog.textContent += `ページエラー:\n${message}\nファイル: ${source}\n行: ${lineno}, 列: ${colno}\n\n`; errorLog.style.display = 'block'; } console.error("キャッチされなかったエラー:", message, "at", source, lineno, colno, error); return false; };
+        class DiaryStorage { constructor() { this.dbName = 'KokoroCompassDB'; this.dbVersion = 1; this.storeName = 'diaries'; this.db = null; } async init() { return new Promise((resolve, reject) => { if (!window.indexedDB) { return reject(new Error('このブラウザはIndexedDBをサポートしていません。')); } const request = indexedDB.open(this.dbName, this.dbVersion); request.onerror = () => reject(request.error); request.onsuccess = () => { this.db = request.result; resolve(); }; request.onupgradeneeded = (event) => { const db = event.target.result; if (!db.objectStoreNames.contains(this.storeName)) { const store = db.createObjectStore(this.storeName, { keyPath: 'id' }); store.createIndex('date', 'date', { unique: false }); store.createIndex('emotion', 'emotion', { unique: false }); } }; }); } async saveDiary(diary) { return new Promise((resolve, reject) => { const transaction = this.db.transaction([this.storeName], 'readwrite'); transaction.oncomplete = () => resolve(); transaction.onerror = () => reject(transaction.error); const store = transaction.objectStore(this.storeName); store.put(diary); }); } async importDiaries(diaries) { return new Promise((resolve, reject) => { const transaction = this.db.transaction([this.storeName], 'readwrite'); transaction.oncomplete = () => resolve(); transaction.onerror = () => reject(transaction.error); const store = transaction.objectStore(this.storeName); diaries.forEach(diary => { if (diary.id && diary.date) { store.put(diary); } }); }); } async getAllDiaries() { return new Promise((resolve, reject) => { const transaction = this.db.transaction([this.storeName], 'readonly'); transaction.onerror = () => reject(transaction.error); const store = transaction.objectStore(this.storeName); const request = store.getAll(); request.onsuccess = () => resolve(request.result); }); } async deleteDiary(id) { return new Promise((resolve, reject) => { const transaction = this.db.transaction([this.storeName], 'readwrite'); transaction.oncomplete = () => resolve(); transaction.onerror = () => reject(transaction.error); const store = transaction.objectStore(this.storeName); store.delete(id); }); } }
 
         try {
             document.addEventListener('DOMContentLoaded', async () => {
-                console.log("DOM Content Loaded. Enhanced Version Initializing...");
-
-                const diaryForm = document.getElementById('diary-form');
-                const emotionSelectorButtons = document.getElementById('emotion-selector-buttons');
-                const selectedEmotionInput = document.getElementById('selected-emotion-value');
-                const diaryMemoInput = document.getElementById('diary-memo-input');
-                const diaryListUl = document.getElementById('diary-list-ul');
-                const errorLogDisplay = document.getElementById('error-log-display');
-                const infoDisplay = document.getElementById('info-display');
-                const photoInput = document.getElementById('photo-input');
-                const photoUploadArea = document.getElementById('photo-upload-area');
-                const photoPreviewContainer = document.getElementById('photo-preview-container');
-                const emotionFilter = document.getElementById('emotion-filter');
-                const monthFilter = document.getElementById('month-filter');
-                const photoModal = document.getElementById('photo-modal');
-                const modalImage = document.getElementById('modal-image');
-                const modalClose = document.querySelector('.modal-close');
-
-                let initError = false;
-                const requiredElements = [
-                    { element: diaryForm, name: 'diary-form' },
-                    { element: emotionSelectorButtons, name: 'emotion-selector-buttons' },
-                    { element: selectedEmotionInput, name: 'selected-emotion-value' },
-                    { element: diaryMemoInput, name: 'diary-memo-input' },
-                    { element: diaryListUl, name: 'diary-list-ul' },
-                    { element: photoInput, name: 'photo-input' },
-                    { element: emotionFilter, name: 'emotion-filter' },
-                    { element: monthFilter, name: 'month-filter' }
-                ];
-
-                const missing = requiredElements.filter(item => !item.element).map(item => item.name);
-                if (missing.length > 0) {
-                    console.error(`必須DOM要素が見つかりません: ${missing.join(', ')}`);
-                    if (errorLogDisplay) {
-                        errorLogDisplay.textContent = `ページ部品不足: ${missing.join(', ')}`;
-                        errorLogDisplay.style.display = 'block';
-                    }
-                    initError = true;
-                }
-                if (initError) return;
-                console.log("主要DOM要素取得完了。");
-
-                // データベース初期化
+                const requiredElements = { diaryForm: document.getElementById('diary-form'), emotionSelectorButtons: document.getElementById('emotion-selector-buttons'), selectedEmotionInput: document.getElementById('selected-emotion-value'), diaryMemoInput: document.getElementById('diary-memo-input'), diaryListUl: document.getElementById('diary-list-ul'), errorLogDisplay: document.getElementById('error-log-display'), infoDisplay: document.getElementById('info-display'), photoInput: document.getElementById('photo-input'), photoUploadArea: document.getElementById('photo-upload-area'), photoPreviewContainer: document.getElementById('photo-preview-container'), emotionFilter: document.getElementById('emotion-filter'), monthFilter: document.getElementById('month-filter'), photoModal: document.getElementById('photo-modal'), modalImage: document.getElementById('modal-image'), modalClose: document.querySelector('.modal-close'), exportDataButton: document.getElementById('export-data-button'), importDataButton: document.getElementById('import-data-button'), importFileInput: document.getElementById('import-file-input'), storageStatus: document.getElementById('storage-status'), };
+                for (const key in requiredElements) { if (!requiredElements[key]) { console.error(`必須DOM要素が見つかりません: ${key}`); document.body.innerHTML = `<div style="padding:20px; text-align:center; color:red;">ページの読み込みに失敗しました。必須コンポーネント '${key}' が見つかりません。</div>`; return; } }
+                const { diaryForm, emotionSelectorButtons, selectedEmotionInput, diaryMemoInput, diaryListUl, errorLogDisplay, infoDisplay, photoInput, photoUploadArea, photoPreviewContainer, emotionFilter, monthFilter, photoModal, modalImage, modalClose, exportDataButton, importDataButton, importFileInput, storageStatus } = requiredElements;
                 const storage = new DiaryStorage();
-                try {
-                    await storage.init();
-                    console.log("IndexedDB初期化完了");
-                } catch (error) {
-                    console.error("IndexedDB初期化失敗:", error);
-                    displayUserMessage('error-log-display', "データベースの初期化に失敗しました。", true);
-                    return;
-                }
+                try { await storage.init(); } catch (error) { console.error("IndexedDB初期化失敗:", error); displayUserMessage('error-log-display', `データベースの初期化に失敗しました: ${error.message} アプリが正常に動作しない可能性があります。`, true, 10000); return; }
+                let diaries = []; let currentEmotionFilter = 'all'; let currentMonthFilter = 'all'; let selectedPhoto = null;
+                const emotions = [{ text: "とってもハッピー！", value: "😆 とってもハッピー！", icon: "😆", colorVar: '--emotion-very-happy', selectedBg: '#FFF9C4' }, { text: "いい感じ・うれしい", value: "😊 いい感じ・うれしい", icon: "😊", colorVar: '--emotion-happy', selectedBg: '#DCEDC8' }, { text: "たのしい！", value: "😄 たのしい！", icon: "😄", colorVar: '--emotion-fun', selectedBg: '#C8E6C9' }, { text: "おだやか・ホッとした", value: "😌 おだやか・ホッとした", icon: "😌", colorVar: '--emotion-calm', selectedBg: '#E0F2F1' }, { text: "なんとなく・普通", value: "🙂 なんとなく・普通", icon: "🙂", colorVar: '--emotion-neutral', selectedBg: '#F5F5F5' }, { text: "疲れたな…", value: "😕 疲れたな…", icon: "😕", colorVar: '--emotion-tired', selectedBg: '#ECEFF1' }, { text: "ちょっと悲しい", value: "😢 ちょっと悲しい", icon: "😢", colorVar: '--emotion-sad', selectedBg: '#E3F2FD' }, { text: "さみしい・むなしい", value: "😔 さみしい・むなしい", icon: "😔", colorVar: '--emotion-lonely', selectedBg: 'rgba(164, 184, 191, 0.2)' }, { text: "すごくつらい", value: "😭 すごくつらい", icon: "😭", colorVar: '--emotion-very-sad', selectedBg: 'rgba(179, 157, 219, 0.2)' }, { text: "不安なきもち", value: "😥 不安なきもち", icon: "😥", colorVar: '--emotion-anxious', selectedBg: 'rgba(225, 190, 231, 0.2)' }, { text: "イライラ・もやもや", value: "😠 イライラ・もやもや", icon: "😠", colorVar: '--emotion-irritable', selectedBg: 'rgba(255, 204, 188, 0.2)' }, { text: "よくわからない", value: "🤔 よくわからない", icon: "🤔", colorVar: '--emotion-other', selectedBg: 'rgba(215, 204, 200, 0.2)' }];
+                function sanitizeHTML(str) { if (typeof str !== 'string') return ''; const temp = document.createElement('div'); temp.textContent = str; return temp.innerHTML; }
+                function displayUserMessage(elementId, message, isError = false, duration = 4000) { const element = document.getElementById(elementId); if (element) { element.textContent = message; element.className = `message-box ${isError ? 'error-message' : 'info-message'}`; element.style.display = 'block'; setTimeout(() => { element.style.display = 'none'; }, duration); } }
+                function getWeekday(date) { const weekdays = ['日', '月', '火', '水', '木', '金', '土']; return weekdays[date.getDay()]; }
+                function fileToBase64(file) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.onerror = reject; reader.readAsDataURL(file); }); }
 
-                let diaries = [];
-                let currentEmotionFilter = 'all';
-                let currentMonthFilter = 'all';
-                let selectedPhoto = null;
-
-                // 感情の選択肢
-                const emotions = [
-                    { text: "とってもハッピー！", value: "😆 とってもハッピー！", icon: "😆", colorVar: '--emotion-very-happy', selectedBg: '#FFF9C4' },
-                    { text: "いい感じ・うれしい", value: "😊 いい感じ・うれしい", icon: "😊", colorVar: '--emotion-happy',    selectedBg: '#DCEDC8' },
-                    { text: "たのしい！", value: "😄 たのしい！", icon: "😄", colorVar: '--emotion-fun',      selectedBg: '#C8E6C9' },
-                    { text: "おだやか・ホッとした", value: "😌 おだやか・ホッとした", icon: "😌", colorVar: '--emotion-calm',     selectedBg: '#E0F2F1' },
-                    { text: "なんとなく・普通", value: "🙂 なんとなく・普通", icon: "🙂", colorVar: '--emotion-neutral',  selectedBg: '#F5F5F5' },
-                    { text: "疲れたな…", value: "😕 疲れたな…", icon: "😕", colorVar: '--emotion-tired',    selectedBg: '#ECEFF1' },
-                    { text: "ちょっと悲しい", value: "😢 ちょっと悲しい", icon: "😢", colorVar: '--emotion-sad',      selectedBg: '#E3F2FD' },
-                    { text: "さみしい・むなしい", value: "😔 さみしい・むなしい", icon: "😔", colorVar: '--emotion-lonely', selectedBg: 'rgba(164, 184, 191, 0.2)' },
-                    { text: "すごくつらい", value: "😭 すごくつらい", icon: "😭", colorVar: '--emotion-very-sad', selectedBg: 'rgba(179, 157, 219, 0.2)' },
-                    { text: "不安なきもち", value: "😥 不安なきもち", icon: "😥", colorVar: '--emotion-anxious',  selectedBg: 'rgba(225, 190, 231, 0.2)' },
-                    { text: "イライラ・もやもや", value: "😠 イライラ・もやもや", icon: "😠", colorVar: '--emotion-irritable',selectedBg: 'rgba(255, 204, 188, 0.2)' },
-                    { text: "よくわからない", value: "🤔 よくわからない", icon: "🤔", colorVar: '--emotion-other',    selectedBg: 'rgba(215, 204, 200, 0.2)' }
-                ];
-
-                function sanitizeHTML(str) {
-                    if (typeof str !== 'string') return '';
-                    const temp = document.createElement('div');
-                    temp.textContent = str;
-                    return temp.innerHTML;
-                }
-
-                function displayUserMessage(elementId, message, isError = false) {
-                    const element = document.getElementById(elementId);
-                    if (element) {
-                        element.textContent = message;
-                        element.className = `message-box ${isError ? 'error-message' : 'info-message'}`;
-                        element.style.display = 'block';
-                        setTimeout(() => { element.style.display = 'none'; }, 3000);
-                    }
-                }
-
-                function clearMessages() {
-                    if (infoDisplay) infoDisplay.style.display = 'none';
-                }
-
-                // 曜日を取得する関数
-                function getWeekday(date) {
-                    const weekdays = ['日', '月', '火', '水', '木', '金', '土'];
-                    return weekdays[date.getDay()];
-                }
-
-                // 写真をBase64に変換
-                function fileToBase64(file) {
-                    return new Promise((resolve, reject) => {
-                        const reader = new FileReader();
-                        reader.onload = () => resolve(reader.result);
-                        reader.onerror = reject;
-                        reader.readAsDataURL(file);
-                    });
-                }
-
-                // 感情ボタンの描画
+                // --- ここから修正箇所 ---
                 function renderEmotionButtons() {
-                    if (!emotionSelectorButtons || !selectedEmotionInput) return;
                     emotionSelectorButtons.innerHTML = '';
                     emotions.forEach(emotion => {
                         const button = document.createElement('button');
-                        button.type = 'button'; 
+                        button.type = 'button';
                         button.classList.add('emotion-button');
                         button.dataset.emotionValue = emotion.value;
                         button.innerHTML = `<span class="emotion-icon">${emotion.icon}</span>${emotion.text}`;
-                        
+
                         button.addEventListener('click', () => {
+                            // すべてのボタンの選択状態とスタイルをリセット
                             document.querySelectorAll('.emotion-button').forEach(btn => {
                                 btn.classList.remove('selected');
-                                btn.style.borderColor = 'var(--border-color)';
-                                btn.style.backgroundColor = '#fff';
+                                btn.style.borderColor = ''; // インラインスタイルを削除
+                                btn.style.backgroundColor = ''; // インラインスタイルを削除
                             });
+
+                            // クリックされたボタンに選択状態とスタイルを適用
                             button.classList.add('selected');
                             button.style.borderColor = `var(${emotion.colorVar})`;
                             button.style.backgroundColor = emotion.selectedBg;
@@ -410,345 +758,67 @@
                         emotionSelectorButtons.appendChild(button);
                     });
                 }
+                // --- ここまで修正箇所 ---
 
-                // フィルターセレクトボックスの描画
-                function renderFilterSelects() {
-                    if (!emotionFilter || !monthFilter) return;
-                    
-                    // 感情フィルターのオプション生成
-                    emotionFilter.innerHTML = '<option value="all">すべて</option>';
-                    emotions.forEach(emotion => {
-                        const option = document.createElement('option');
-                        option.value = emotion.value;
-                        option.textContent = `${emotion.icon} ${emotion.text}`;
-                        emotionFilter.appendChild(option);
-                    });
-                    
-                    // 月フィルターのオプション生成（記録がある月のみ）
-                    updateMonthFilter();
-                    
-                    // イベントリスナー設定
-                    emotionFilter.addEventListener('change', () => {
-                        currentEmotionFilter = emotionFilter.value;
-                        renderDiaryList();
-                    });
-                    
-                    monthFilter.addEventListener('change', () => {
-                        currentMonthFilter = monthFilter.value;
-                        renderDiaryList();
-                    });
-                }
+                function renderFilterSelects() { emotionFilter.innerHTML = '<option value="all">すべて</option>'; emotions.forEach(emotion => { const option = document.createElement('option'); option.value = emotion.value; option.textContent = `${emotion.icon} ${emotion.text}`; emotionFilter.appendChild(option); }); updateMonthFilter(); emotionFilter.addEventListener('change', () => { currentEmotionFilter = emotionFilter.value; renderDiaryList(); }); monthFilter.addEventListener('change', () => { currentMonthFilter = monthFilter.value; renderDiaryList(); }); }
+                function updateMonthFilter() { const currentVal = monthFilter.value; monthFilter.innerHTML = '<option value="all">すべて</option>'; const months = new Set(); diaries.forEach(diary => { const date = new Date(diary.date); const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`; months.add(monthKey); }); const sortedMonths = Array.from(months).sort().reverse(); sortedMonths.forEach(monthKey => { const [year, month] = monthKey.split('-'); const option = document.createElement('option'); option.value = monthKey; option.textContent = `${year}年${parseInt(month)}月`; monthFilter.appendChild(option); }); if (sortedMonths.includes(currentVal)) { monthFilter.value = currentVal; } }
+                function handlePhotoUpload(file) { if (!file || !file.type.startsWith('image/')) { displayUserMessage('error-log-display', '画像ファイルを選択してください。', true); return; } fileToBase64(file).then(base64 => { selectedPhoto = base64; showPhotoPreview(base64); }).catch(error => { console.error('写真の読み込みに失敗:', error); displayUserMessage('error-log-display', '写真の読み込みに失敗しました。', true); }); }
+                function showPhotoPreview(base64) { photoPreviewContainer.innerHTML = `<img src="${base64}" alt="選択された写真" class="photo-preview"><button type="button" class="photo-remove-button" onclick="removePhoto()">削除</button>`; }
+                window.removePhoto = function () { selectedPhoto = null; photoPreviewContainer.innerHTML = ''; photoInput.value = ''; };
+                photoInput.addEventListener('change', (e) => { if (e.target.files[0]) { handlePhotoUpload(e.target.files[0]); } });
+                photoUploadArea.addEventListener('dragover', (e) => { e.preventDefault(); photoUploadArea.classList.add('dragover'); });
+                photoUploadArea.addEventListener('dragleave', () => { photoUploadArea.classList.remove('dragover'); });
+                photoUploadArea.addEventListener('drop', (e) => { e.preventDefault(); photoUploadArea.classList.remove('dragover'); if (e.dataTransfer.files[0]) { handlePhotoUpload(e.dataTransfer.files[0]); } });
+                modalClose.addEventListener('click', () => { photoModal.style.display = 'none'; photoModal.classList.remove('show'); });
+                photoModal.addEventListener('click', (e) => { if (e.target === photoModal) { photoModal.style.display = 'none'; photoModal.classList.remove('show'); } });
+                async function loadDiariesFromStorage() { try { diaries = await storage.getAllDiaries(); } catch (e) { diaries = []; displayUserMessage('error-log-display', "記録データの読み込みに失敗。", true); } }
+                async function saveDiaryToStorage(diary) { try { await storage.saveDiary(diary); } catch (e) { displayUserMessage('error-log-display', "記録の保存に失敗。", true); throw e; } }
+                async function deleteDiary(diaryId) { try { await storage.deleteDiary(diaryId); const index = diaries.findIndex(diary => diary.id === diaryId); if (index !== -1) { diaries.splice(index, 1); updateMonthFilter(); renderDiaryList(); displayUserMessage('info-display', "きろくを削除しました。"); } } catch (e) { displayUserMessage('error-log-display', "削除に失敗しました。", true); } }
+                window.showPhotoModal = function (photoSrc) { modalImage.src = photoSrc; photoModal.style.display = 'block'; setTimeout(() => photoModal.classList.add('show'), 10); };
+                function renderDiaryList(isNewEntry = false) { diaryListUl.innerHTML = ''; let filteredDiaries = diaries; if (currentEmotionFilter !== 'all') { filteredDiaries = filteredDiaries.filter(diary => diary.emotion === currentEmotionFilter); } if (currentMonthFilter !== 'all') { filteredDiaries = filteredDiaries.filter(diary => { const date = new Date(diary.date); const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`; return monthKey === currentMonthFilter; }); } if (filteredDiaries.length === 0) { let message = 'まだきろくがありません。'; if (diaries.length > 0) { message = '条件に合うきろくがありません。'; } diaryListUl.innerHTML = `<li class="no-diary-message">${message}</li>`; return; } const sortedDiaries = [...filteredDiaries].sort((a, b) => new Date(b.date) - new Date(a.date)); sortedDiaries.forEach((diary, index) => { const li = document.createElement('li'); if (isNewEntry && index === 0) { li.classList.add('new-entry'); } const emotionData = emotions.find(e => e.value === diary.emotion); const emotionColor = emotionData ? `var(${emotionData.colorVar})` : 'var(--emotion-neutral)'; const emotionIcon = emotionData ? emotionData.icon : "❔"; const date = new Date(diary.date); const weekday = getWeekday(date); const formattedDate = `${date.toLocaleString('ja-JP', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })} (${weekday})`; li.style.borderLeft = `3px solid ${emotionColor}`; let contentHTML = `<div class="entry-emotion-icon-display">${emotionIcon}</div><div class="entry-text-content"><p class="entry-memo-text">${sanitizeHTML(diary.memo) || "(ひとことなし)"}</p>${diary.photo ? `<img src="${diary.photo}" alt="写真" class="entry-photo" onclick="showPhotoModal('${diary.photo}')">` : ''}<p class="entry-date">${formattedDate}</p></div><div class="entry-actions"><button class="delete-button" data-id="${diary.id}">削除</button></div>`; li.innerHTML = contentHTML; li.querySelector('.delete-button').addEventListener('click', (e) => { const diaryId = e.target.dataset.id; if (confirm('このきろくを削除しますか？')) { const targetLi = e.target.closest('li'); targetLi.style.transition = 'all 0.3s ease'; targetLi.style.opacity = '0'; targetLi.style.transform = 'translateX(-20px)'; setTimeout(() => deleteDiary(diaryId), 300); } }); diaryListUl.appendChild(li); }); }
 
-                // 月フィルターの更新（記録がある月のみ表示）
-                function updateMonthFilter() {
-                    if (!monthFilter) return;
-                    
-                    monthFilter.innerHTML = '<option value="all">すべて</option>';
-                    
-                    // 記録がある月を抽出
-                    const months = new Set();
-                    diaries.forEach(diary => {
-                        const date = new Date(diary.date);
-                        const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-                        months.add(monthKey);
-                    });
-                    
-                    // 月のオプションを追加（新しい順）
-                    Array.from(months).sort().reverse().forEach(monthKey => {
-                        const [year, month] = monthKey.split('-');
-                        const option = document.createElement('option');
-                        option.value = monthKey;
-                        option.textContent = `${year}年${parseInt(month)}月`;
-                        monthFilter.appendChild(option);
-                    });
-                }
-
-                // 写真アップロード処理
-                function handlePhotoUpload(file) {
-                    if (!file || !file.type.startsWith('image/')) {
-                        displayUserMessage('error-log-display', '画像ファイルを選択してください。', true);
+                // --- ここから修正箇所 ---
+                diaryForm.addEventListener('submit', async function (event) {
+                    event.preventDefault();
+                    const emotion = selectedEmotionInput.value;
+                    const memo = diaryMemoInput.value.trim();
+                    if (!emotion) {
+                        displayUserMessage('error-log-display', "きもちを選んでくださいね。", true);
                         return;
                     }
-
-                    fileToBase64(file).then(base64 => {
-                        selectedPhoto = base64;
-                        showPhotoPreview(base64);
-                    }).catch(error => {
-                        console.error('写真の読み込みに失敗:', error);
-                        displayUserMessage('error-log-display', '写真の読み込みに失敗しました。', true);
-                    });
-                }
-
-                // 写真プレビュー表示
-                function showPhotoPreview(base64) {
-                    photoPreviewContainer.innerHTML = `
-                        <img src="${base64}" alt="選択された写真" class="photo-preview">
-                        <button type="button" class="photo-remove-button" onclick="removePhoto()">削除</button>
-                    `;
-                }
-
-                // 写真削除
-                window.removePhoto = function() {
-                    selectedPhoto = null;
-                    photoPreviewContainer.innerHTML = '';
-                };
-
-                // 写真関連のイベントリスナー
-                if (photoInput) {
-                    photoInput.addEventListener('change', (e) => {
-                        if (e.target.files[0]) {
-                            handlePhotoUpload(e.target.files[0]);
-                        }
-                    });
-                }
-
-                // ドラッグ&ドロップ処理
-                if (photoUploadArea) {
-                    photoUploadArea.addEventListener('dragover', (e) => {
-                        e.preventDefault();
-                        photoUploadArea.classList.add('dragover');
-                    });
-
-                    photoUploadArea.addEventListener('dragleave', () => {
-                        photoUploadArea.classList.remove('dragover');
-                    });
-
-                    photoUploadArea.addEventListener('drop', (e) => {
-                        e.preventDefault();
-                        photoUploadArea.classList.remove('dragover');
-                        if (e.dataTransfer.files[0]) {
-                            handlePhotoUpload(e.dataTransfer.files[0]);
-                        }
-                    });
-                }
-
-                // モーダル処理
-                if (modalClose) {
-                    modalClose.addEventListener('click', () => {
-                        photoModal.style.display = 'none';
-                    });
-                }
-
-                if (photoModal) {
-                    photoModal.addEventListener('click', (e) => {
-                        if (e.target === photoModal) {
-                            photoModal.style.display = 'none';
-                        }
-                    });
-                }
-
-                // 日記データのロード
-                async function loadDiariesFromStorage() {
-                    console.log("loadDiariesFromStorage: 読み込み開始");
+                    const newEntry = { id: Date.now().toString(), emotion: emotion, memo: memo, photo: selectedPhoto, date: new Date().toISOString() };
                     try {
-                        diaries = await storage.getAllDiaries();
-                        console.log("日記をIndexedDBからロード成功:", diaries.length, "件");
-                    } catch (e) {
-                        console.error("IndexedDB読み込み失敗:", e);
-                        diaries = [];
-                        displayUserMessage('error-log-display', "記録データの読み込みに失敗。", true);
-                    }
-                }
-
-                // 日記データの保存
-                async function saveDiaryToStorage(diary) {
-                    console.log("saveDiaryToStorage: 保存開始", diary);
-                    try {
-                        await storage.saveDiary(diary);
-                        console.log("日記をIndexedDBに保存成功");
-                    } catch (e) {
-                        console.error("IndexedDB保存失敗:", e);
-                        displayUserMessage('error-log-display', "記録の保存に失敗。", true);
-                        throw e;
-                    }
-                }
-
-                // 日記削除
-                async function deleteDiary(diaryId) {
-                    console.log("deleteDiary: 削除開始, ID:", diaryId);
-                    try {
-                        await storage.deleteDiary(diaryId);
-                        const index = diaries.findIndex(diary => diary.id === diaryId);
-                        if (index !== -1) {
-                            diaries.splice(index, 1);
-                            updateMonthFilter(); // 削除時に月フィルターを更新
-                            renderDiaryList();
-                            displayUserMessage('info-display', "きろくを削除しました。");
-                            console.log("日記削除完了");
-                        }
-                    } catch (e) {
-                        console.error("日記削除失敗:", e);
-                        displayUserMessage('error-log-display', "削除に失敗しました。", true);
-                    }
-                }
-
-                // 日記一覧の描画
-                function renderDiaryList() {
-                    if (!diaryListUl) { 
-                        console.error("renderDiaryList: diaryListUl is null!"); 
-                        return; 
-                    }
-                    
-                    diaryListUl.innerHTML = '';
-                    console.log("renderDiaryList: 描画開始。現在のdiaries配列の件数:", diaries.length);
-
-                    // フィルター適用
-                    let filteredDiaries = diaries;
-                    
-                    // 感情フィルター
-                    if (currentEmotionFilter !== 'all') {
-                        filteredDiaries = filteredDiaries.filter(diary => diary.emotion === currentEmotionFilter);
-                    }
-                    
-                    // 月フィルター
-                    if (currentMonthFilter !== 'all') {
-                        filteredDiaries = filteredDiaries.filter(diary => {
-                            const date = new Date(diary.date);
-                            const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-                            return monthKey === currentMonthFilter;
+                        await saveDiaryToStorage(newEntry);
+                        diaries.unshift(newEntry);
+                        updateMonthFilter();
+                        renderDiaryList(true);
+                        diaryForm.reset();
+                        // フォームリセット時に、すべてのボタンのスタイルをクリアする
+                        document.querySelectorAll('.emotion-button').forEach(btn => {
+                            btn.classList.remove('selected');
+                            btn.style.borderColor = ''; // インラインスタイルを削除
+                            btn.style.backgroundColor = ''; // インラインスタイルを削除
                         });
+                        selectedEmotionInput.value = '';
+                        removePhoto();
+                        displayUserMessage('info-display', "きもちをのこしました。");
+                    } catch (error) {
+                        console.error("日記保存エラー:", error);
                     }
+                });
+                // --- ここまで修正箇所 ---
 
-                    if (filteredDiaries.length === 0) {
-                        let message = 'まだきろくがありません。';
-                        if (currentEmotionFilter !== 'all' || currentMonthFilter !== 'all') {
-                            message = '条件に合うきろくがありません。';
-                        }
-                        diaryListUl.innerHTML = `<li class="no-diary-message">${message}</li>`;
-                        return;
-                    }
+    
+                exportDataButton.addEventListener('click', async () => { try { const allDiaries = await storage.getAllDiaries(); if (allDiaries.length === 0) { displayUserMessage('info-display', '書き出すきろくがありません。'); return; } const jsonString = JSON.stringify(allDiaries, null, 2); const blob = new Blob([jsonString], { type: 'application/json' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; const date = new Date(); const timestamp = `${date.getFullYear()}${(date.getMonth() + 1).toString().padStart(2, '0')}${date.getDate().toString().padStart(2, '0')}`; a.download = `kokoro-compass-backup-${timestamp}.json`; a.click(); URL.revokeObjectURL(url); a.remove(); displayUserMessage('info-display', 'データの書き出しが完了しました。'); } catch (error) { displayUserMessage('error-log-display', 'データの書き出しに失敗しました。', true); } });
+                async function checkAndRequestPersistentStorage() { if (navigator.storage && navigator.storage.persist) { let isPersisted = await navigator.storage.persisted(); if (!isPersisted) { isPersisted = await navigator.storage.persist(); } if (isPersisted) { storageStatus.textContent = "✓ データは保護されています"; storageStatus.className = 'persistent'; } else { storageStatus.style.display = 'none'; } } else { storageStatus.style.display = 'none'; } }
+                importDataButton.addEventListener('click', () => { importFileInput.click(); });
+                importFileInput.addEventListener('change', (event) => { const file = event.target.files[0]; if (!file) return; if (!confirm('ファイルからデータを読み込みます。現在と同じIDの記録は上書きされず、新しいIDの記録のみ追加されます。よろしいですか？')) { event.target.value = null; return; } const reader = new FileReader(); reader.onload = async (e) => { try { const importedData = JSON.parse(e.target.result); if (!Array.isArray(importedData)) { throw new Error('ファイル形式が正しくありません。'); } const existingIds = new Set(diaries.map(d => d.id)); const newEntries = importedData.filter(entry => entry && typeof entry.id === 'string' && typeof entry.date === 'string' && !existingIds.has(entry.id)); if (newEntries.length === 0) { displayUserMessage('info-display', '新しく追加できるきろくはありませんでした。'); return; } await storage.importDiaries(newEntries); await loadDiariesFromStorage(); updateMonthFilter(); renderDiaryList(); displayUserMessage('info-display', `${newEntries.length}件の新しいきろくを読み込みました。`); } catch (error) { console.error('インポート失敗:', error); displayUserMessage('error-log-display', `データの読み込みに失敗しました: ${error.message}`, true); } finally { event.target.value = null; } }; reader.readAsText(file); });
 
-                    const sortedDiaries = [...filteredDiaries].sort((a, b) => new Date(b.date) - new Date(a.date));
-
-                    sortedDiaries.forEach(diary => {
-                        const li = document.createElement('li');
-                        const emotionData = emotions.find(e => e.value === diary.emotion);
-                        const emotionColor = emotionData ? `var(${emotionData.colorVar})` : 'var(--emotion-neutral)';
-                        const emotionIcon = emotionData ? emotionData.icon : "❔";
-
-                        const date = new Date(diary.date);
-                        const weekday = getWeekday(date);
-                        const formattedDate = `${date.toLocaleString('ja-JP', { 
-                            month: 'short', 
-                            day: 'numeric', 
-                            hour:'2-digit', 
-                            minute:'2-digit' 
-                        })} (${weekday})`;
-                        
-                        li.style.borderLeftColor = emotionColor;
-
-                        const emotionIconDiv = document.createElement('div');
-                        emotionIconDiv.classList.add('entry-emotion-icon-display');
-                        emotionIconDiv.innerHTML = emotionIcon;
-
-                        const textContentDiv = document.createElement('div');
-                        textContentDiv.classList.add('entry-text-content');
-                        
-                        let contentHTML = `<p class="entry-memo-text">${sanitizeHTML(diary.memo) || "(ひとことなし)"}</p>`;
-                        
-                        if (diary.photo) {
-                            contentHTML += `<img src="${diary.photo}" alt="写真" class="entry-photo" onclick="showPhotoModal('${diary.photo}')">`;
-                        }
-                        
-                        contentHTML += `<p class="entry-date">${formattedDate}</p>`;
-                        
-                        textContentDiv.innerHTML = contentHTML;
-
-                        const actionsDiv = document.createElement('div');
-                        actionsDiv.classList.add('entry-actions');
-                        const deleteButton = document.createElement('button');
-                        deleteButton.classList.add('delete-button');
-                        deleteButton.textContent = '削除';
-                        deleteButton.addEventListener('click', () => {
-                            if (confirm('このきろくを削除しますか？')) {
-                                deleteDiary(diary.id);
-                            }
-                        });
-                        actionsDiv.appendChild(deleteButton);
-
-                        li.appendChild(emotionIconDiv);
-                        li.appendChild(textContentDiv);
-                        li.appendChild(actionsDiv);
-
-                        diaryListUl.appendChild(li);
-                    });
-                    console.log("日記一覧レンダリング完了。");
-                }
-
-                // 写真モーダル表示
-                window.showPhotoModal = function(photoSrc) {
-                    modalImage.src = photoSrc;
-                    photoModal.style.display = 'block';
-                };
-                
-                // フォーム送信処理
-                if (diaryForm) {
-                    diaryForm.addEventListener('submit', async function(event) {
-                        event.preventDefault();
-                        clearMessages();
-                        console.log("フォーム送信処理開始");
-
-                        const emotion = selectedEmotionInput.value;
-                        const memo = diaryMemoInput.value.trim();
-
-                        if (!emotion) {
-                            displayUserMessage('error-log-display', "きもちを選んでくださいね。", true);
-                            return;
-                        }
-
-                        const newEntry = {
-                            id: Date.now().toString(),
-                            emotion: emotion,
-                            memo: memo,
-                            photo: selectedPhoto,
-                            date: new Date().toISOString()
-                        };
-
-                        try {
-                            await saveDiaryToStorage(newEntry);
-                            diaries.unshift(newEntry);
-                            updateMonthFilter(); // 新しい記録追加時に月フィルターを更新
-                            renderDiaryList();
-                            
-                            // フォームリセット
-                            diaryForm.reset();
-                            document.querySelectorAll('.emotion-button').forEach(btn => {
-                                btn.classList.remove('selected');
-                                btn.style.borderColor = 'var(--border-color)';
-                                btn.style.backgroundColor = '#fff';
-                            });
-                            if(selectedEmotionInput) selectedEmotionInput.value = '';
-                            selectedPhoto = null;
-                            photoPreviewContainer.innerHTML = '';
-                            
-                            displayUserMessage('info-display', "きもちをのこしました。");
-                        } catch (error) {
-                            console.error("日記保存エラー:", error);
-                            displayUserMessage('error-log-display', "きろくの保存に失敗しました。", true);
-                        }
-                    });
-                } else {
-                    console.error("日記フォーム(#diary-form)が見つかりません。");
-                }
-
-                // --- 初期化 ---
-                try {
-                    console.log("初期化処理 (セレクトボックス版) 開始");
-                    renderEmotionButtons();
-                    renderFilterSelects();
-                    await loadDiariesFromStorage();
-                    updateMonthFilter(); // 月フィルターを再更新
-                    renderDiaryList();
-                    console.log("初期化処理 (セレクトボックス版) 完了");
-                } catch (e) {
-                    console.error("初期化中にエラー:", e);
-                    if(errorLogDisplay) displayUserMessage('error-log-display', "ページの準備中に問題が発生しました。", true);
-                }
+                async function initializeApp() { console.log("初期化処理開始"); renderEmotionButtons(); renderFilterSelects(); await loadDiariesFromStorage(); updateMonthFilter(); renderDiaryList(); await checkAndRequestPersistentStorage(); console.log("初期化処理完了"); }
+                await initializeApp();
             });
-        } catch (e) {
-            console.error("DOMContentLoadedより前のエラー:", e);
-            alert("ページ読み込みの初期段階で重大なエラーが発生しました。コンソールを確認してください。");
-        }
+        } catch (e) { console.error("DOMContentLoadedより前のエラー:", e); document.body.innerHTML = `<div style="padding:20px; text-align:center; color:red;">ページの読み込みに重大なエラーが発生しました。</div>`; }
     </script>
 </body>
+
 </html>
